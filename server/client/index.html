@@ -10,38 +10,6 @@
           Helvetica, Arial, sans-serif;
       }
 
-      #form {
-        background: rgba(0, 0, 0, 0.15);
-        padding: 0.25rem;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        height: 3rem;
-        box-sizing: border-box;
-        backdrop-filter: blur(10px);
-      }
-      #input {
-        border: none;
-        padding: 0 1rem;
-        flex-grow: 1;
-        border-radius: 2rem;
-        margin: 0.25rem;
-      }
-      #input:focus {
-        outline: none;
-      }
-      #form > button {
-        background: #333;
-        border: none;
-        padding: 0 1rem;
-        margin: 0.25rem;
-        border-radius: 3px;
-        outline: none;
-        color: #fff;
-      }
-
       #messages {
         list-style-type: none;
         margin: 0;
@@ -56,30 +24,38 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
     <form id="form" action="">
       <input id="name" placeholder="name" autocomplete="off" />
-      <input id="input" placeholder="message" autocomplete="off" />
-
+      <!-- <input id="input" placeholder="message" autocomplete="off" /> -->
+      <br />
+      <canvas
+        id="myCanvas"
+        width="500"
+        height="500"
+        style="border: 1px solid #000000"
+      >
+      </canvas>
       <button>Send</button>
     </form>
+    <ul id="messages"></ul>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
       var socket = io();
 
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
-      var msg = document.getElementById('msg');
+      var msg = 'message here..';
       var userName = document.getElementById('name');
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (input.value && userName.value) {
+        if (msg && userName.value) {
           socket.emit('chat message', {
-            msg: input.value,
+            msg: msg,
             userName: userName.value,
           });
-          input.value = '';
+          // input.value = '';
           userName.value = '';
         }
       });
@@ -93,6 +69,15 @@
         messages.appendChild(content);
         window.scrollTo(0, document.body.scrollHeight);
       });
+
+      setInterval(function () {
+        var d = new Date();
+        var seconds = d.getMinutes() * 60 + d.getSeconds(); //convet 00:00 to seconds for easier caculation
+        var fiveMin = 60 * 5; //five minutes is 300 seconds!
+        var timeleft = fiveMin - (seconds % fiveMin); // let's say 01:30, then current seconds is 90, 90%300 = 90, then 300-90 = 210. That's the time left!
+        var result = parseInt(timeleft / 60) + ':' + (timeleft % 60); //formart seconds into 00:00
+        document.getElementById('test').innerHTML = result;
+      }, 500);
     </script>
   </body>
 </html>
